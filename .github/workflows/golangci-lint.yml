@@ -1,0 +1,48 @@
+name: golangci-lint
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+
+jobs:
+  golangci:
+    name: runner / golangci-lint
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21'
+          cache: true
+
+      - name: Run golangci-lint
+        uses: golangci/golangci-lint-action@v6.0.1
+        with:
+          # Версия golangci-lint
+          version: v1.60.0
+          
+          # Режим установки
+          install-mode: binary
+          
+          # Аргументы для golangci-lint
+          args: --timeout=10m --verbose
+          
+          # Показывать только новые issues в PR
+          only-new-issues: false
+          
+          # Настройки кэша
+          skip-cache: false
+          skip-save-cache: false
+          cache-invalidation-interval: 7
+          
+          # GitHub token
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          
+          # Problem matchers
+          problem-matchers: false
